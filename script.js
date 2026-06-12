@@ -1,4 +1,4 @@
-async function getWeather() {
+async function getWeather(){
 
     let city =
     document.getElementById("cityInput").value;
@@ -9,40 +9,35 @@ async function getWeather() {
     let url =
     `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
 
-    try {
+    let response =
+    await fetch(url);
 
-        let response =
-        await fetch(url);
+    let data =
+    await response.json();
 
-        let data =
-        await response.json();
+    if(data.cod!=200){
 
-        if(data.cod != 200){
+        alert(data.message);
 
-            document.getElementById("cityName").innerText =
-            "Error";
-
-            document.getElementById("temperature").innerText =
-            data.message;
-
-            return;
-        }
-
-        document.getElementById("cityName").innerText =
-        data.name;
-
-        document.getElementById("temperature").innerText =
-        data.main.temp + " °C";
+        return;
 
     }
 
-    catch(error){
+    document.getElementById("cityName").innerText =
+    data.name;
 
-        console.log(error);
+    document.getElementById("temperature").innerText =
+    data.main.temp + " °C";
 
-        document.getElementById("temperature").innerText =
-        "Something went wrong";
+    document.getElementById("humidity").innerText =
+    "Humidity : " + data.main.humidity + "%";
 
-    }
+    document.getElementById("wind").innerText =
+    "Wind : " + data.wind.speed + " m/s";
+
+    document.getElementById("weatherIcon").src =
+    "https://openweathermap.org/img/wn/" +
+    data.weather[0].icon +
+    "@2x.png";
 
 }
