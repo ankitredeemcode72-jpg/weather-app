@@ -9,6 +9,7 @@ async function getWeather(){
     let url =
     `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
 
+    document.getElementById("result").innerHTML = "Loading...";
     let response =
     await fetch(url);
 
@@ -53,5 +54,14 @@ data.weather[0].description;
     "https://openweathermap.org/img/wn/" +
     data.weather[0].icon +
     "@2x.png";
+
+}
+function handleEnter(event){
+
+    if(event.key==="Enter"){
+
+        getWeather();
+
+    }
 
 }
