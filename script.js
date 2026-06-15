@@ -25,6 +25,20 @@ async function getWeather(){
 
     document.getElementById("cityName").innerText =
     data.name;
+    let today =
+new Date();
+
+document
+.getElementById("date")
+.innerText=
+
+today.toDateString();
+
+document
+.getElementById("description")
+.innerText=
+
+data.weather[0].description;
 
     document.getElementById("temperature").innerText =
     data.main.temp + " °C";
