@@ -35,3 +35,38 @@ img{
     width:100px;
 
 }
+@media(max-width:768px){
+
+    .card{
+
+        width:95%;
+
+        margin:auto;
+
+    }
+
+    h1{
+
+        font-size:28px;
+
+    }
+
+    h3{
+
+        font-size:22px;
+
+    }
+
+    input{
+
+        margin-bottom:10px;
+
+    }
+
+    button{
+
+        width:100%;
+
+    }
+
+}
