@@ -1,7 +1,21 @@
+let historyList = [];
 async function getWeather(){
 
     let city =
     document.getElementById("cityInput").value;
+    if(!historyList.includes(city)){
+
+    historyList.unshift(city);
+
+}
+
+if(historyList.length>5){
+
+    historyList.pop();
+
+}
+
+showHistory();
 
     let apiKey =
     "97bcea5bd81c3ca72a435b902d759db6";
@@ -9,7 +23,7 @@ async function getWeather(){
     let url =
     `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
 
-    document.getElementById("result").innerHTML = "Loading...";
+    document.getElementById("cityName").innerText = "Loading...";
     let response =
     await fetch(url);
 
@@ -63,5 +77,36 @@ function handleEnter(event){
         getWeather();
 
     }
+
+}
+function showHistory(){
+
+    let list=
+
+    document.getElementById("history");
+
+    list.innerHTML="";
+
+    historyList.forEach(function(city){
+
+        let li=
+
+        document.createElement("li");
+
+        li.className="list-group-item";
+
+        li.innerText=city;
+
+        li.onclick=function(){
+
+            document.getElementById("cityInput").value=city;
+
+            getWeather();
+
+        }
+
+        list.appendChild(li);
+
+    });
 
 }
