@@ -110,3 +110,105 @@ function showHistory(){
     });
 
 }
+function getLocationWeather(){
+
+    if(navigator.geolocation){
+
+        navigator.geolocation.getCurrentPosition(
+
+            showPosition
+
+        );
+
+    }
+
+    else{
+
+        alert(
+
+        "Geolocation is not supported"
+
+        );
+
+    }
+
+}
+async function showPosition(position){
+
+    let lat =
+
+    position.coords.latitude;
+
+    let lon =
+
+    position.coords.longitude;
+
+    let apiKey =
+
+    "97bcea5bd81c3ca72a435b902d759db6";
+
+    let url =
+
+`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+
+    let response =
+
+    await fetch(url);
+
+    let data =
+
+    await response.json();
+
+    document.getElementById(
+
+    "cityName"
+
+    ).innerText =
+
+    data.name;
+
+    document.getElementById(
+
+    "temperature"
+
+    ).innerText =
+
+    data.main.temp + " °C";
+
+    document.getElementById(
+
+    "humidity"
+
+    ).innerText =
+
+    "Humidity : " +
+
+    data.main.humidity +
+
+    "%";
+
+    document.getElementById(
+
+    "wind"
+
+    ).innerText =
+
+    "Wind : " +
+
+    data.wind.speed +
+
+    " m/s";
+
+    document.getElementById(
+
+    "weatherIcon"
+
+    ).src =
+
+    "https://openweathermap.org/img/wn/" +
+
+    data.weather[0].icon +
+
+    "@2x.png";
+
+}
