@@ -1,214 +1,165 @@
 let historyList = [];
-async function getWeather(){
 
-    let city =
-    document.getElementById("cityInput").value;
-    if(!historyList.includes(city)){
+const apiKey = "97bcea5bd81c3ca72a435b902d759db6";
 
-    historyList.unshift(city);
+async function getWeather() {
 
-}
+    let city = document.getElementById("cityInput").value.trim();
 
-if(historyList.length>5){
+    if (city === "") {
+        alert("Please enter a city name");
+        return;
+    }
 
-    historyList.pop();
+    if (!historyList.includes(city)) {
+        historyList.unshift(city);
+    }
 
-}
+    if (historyList.length > 5) {
+        historyList.pop();
+    }
 
-showHistory();
-
-    let apiKey =
-    "97bcea5bd81c3ca72a435b902d759db6";
+    showHistory();
 
     let url =
-    `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
 
     document.getElementById("cityName").innerText = "Loading...";
-    let response =
-    await fetch(url);
 
-    let data =
-    await response.json();
+    try {
 
-    if(data.cod!=200){
+        let response = await fetch(url);
+        let data = await response.json();
 
-        alert(data.message);
+        if (data.cod != 200) {
+            alert(data.message);
+            return;
+        }
 
-        return;
+        updateWeatherUI(data);
+
+    } catch (error) {
+
+        console.error(error);
+        alert("Failed to fetch weather data.");
 
     }
-
-    document.getElementById("cityName").innerText =
-    data.name;
-    let today =
-new Date();
-
-document
-.getElementById("date")
-.innerText=
-
-today.toDateString();
-
-document
-.getElementById("description")
-.innerText=
-
-data.weather[0].description;
-
-    document.getElementById("temperature").innerText =
-    data.main.temp + " °C";
-
-    document.getElementById("humidity").innerText =
-    "Humidity : " + data.main.humidity + "%";
-
-    document.getElementById("wind").innerText =
-    "Wind : " + data.wind.speed + " m/s";
-
-    document.getElementById("weatherIcon").src =
-    "https://openweathermap.org/img/wn/" +
-    data.weather[0].icon +
-    "@2x.png";
-
 }
-function handleEnter(event){
 
-    if(event.key==="Enter"){
+function handleEnter(event) {
 
+    if (event.key === "Enter") {
         getWeather();
-
     }
 
 }
-function showHistory(){
 
-    let list=
+function showHistory() {
 
-    document.getElementById("history");
+    let list = document.getElementById("history");
 
-    list.innerHTML="";
+    list.innerHTML = "";
 
-    historyList.forEach(function(city){
+    historyList.forEach(function (city) {
 
-        let li=
+        let li = document.createElement("li");
 
-        document.createElement("li");
+        li.className = "list-group-item";
+        li.innerText = city;
 
-        li.className="list-group-item";
+        li.onclick = function () {
 
-        li.innerText=city;
-
-        li.onclick=function(){
-
-            document.getElementById("cityInput").value=city;
-
+            document.getElementById("cityInput").value = city;
             getWeather();
 
-        }
+        };
 
         list.appendChild(li);
 
     });
 
 }
-function getLocationWeather(){
 
-    if(navigator.geolocation){
+function getLocationWeather() {
+
+    if (navigator.geolocation) {
 
         navigator.geolocation.getCurrentPosition(
-
-            showPosition
-
+            showPosition,
+            function (error) {
+                alert("Location error: " + error.message);
+            }
         );
 
-    }
+    } else {
 
-    else{
-
-        alert(
-
-        "Geolocation is not supported"
-
-        );
+        alert("Geolocation is not supported.");
 
     }
 
 }
-async function showPosition(position){
 
-    let lat =
+async function showPosition(position) {
 
-    position.coords.latitude;
-
-    let lon =
-
-    position.coords.longitude;
-
-    let apiKey =
-
-    "97bcea5bd81c3ca72a435b902d759db6";
+    let lat = position.coords.latitude;
+    let lon = position.coords.longitude;
 
     let url =
+        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
 
-`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+    try {
 
-    let response =
+        let response = await fetch(url);
+        let data = await response.json();
 
-    await fetch(url);
+        updateWeatherUI(data);
 
-    let data =
+    } catch (error) {
 
-    await response.json();
+        console.error(error);
+        alert("Failed to fetch location weather.");
 
-    document.getElementById(
+    }
 
-    "cityName"
+}
 
-    ).innerText =
+function updateWeatherUI(data) {
 
-    data.name;
+    document.getElementById("cityName").innerText =
+        data.name;
 
-    document.getElementById(
+    document.getElementById("date").innerText =
+        new Date().toDateString();
 
-    "temperature"
+    document.getElementById("description").innerText =
+        data.weather[0].description;
 
-    ).innerText =
+    document.getElementById("temperature").innerText =
+        data.main.temp + " °C";
 
-    data.main.temp + " °C";
+    document.getElementById("humidity").innerText =
+        "Humidity : " + data.main.humidity + "%";
 
-    document.getElementById(
+    document.getElementById("wind").innerText =
+        "Wind : " + data.wind.speed + " m/s";
 
-    "humidity"
+    let sunriseTime =
+        new Date(data.sys.sunrise * 1000);
 
-    ).innerText =
+    let sunsetTime =
+        new Date(data.sys.sunset * 1000);
 
-    "Humidity : " +
+    document.getElementById("sunrise").innerText =
+        "Sunrise : " + sunriseTime.toLocaleTimeString();
 
-    data.main.humidity +
+    document.getElementById("sunset").innerText =
+        "Sunset : " + sunsetTime.toLocaleTimeString();
 
-    "%";
+    document.getElementById("weatherIcon").src =
+        "https://openweathermap.org/img/wn/" +
+        data.weather[0].icon +
+        "@2x.png";
 
-    document.getElementById(
-
-    "wind"
-
-    ).innerText =
-
-    "Wind : " +
-
-    data.wind.speed +
-
-    " m/s";
-
-    document.getElementById(
-
-    "weatherIcon"
-
-    ).src =
-
-    "https://openweathermap.org/img/wn/" +
-
-    data.weather[0].icon +
-
-    "@2x.png";
-
+    document.getElementById("weatherIcon").alt =
+        data.weather[0].description;
 }
