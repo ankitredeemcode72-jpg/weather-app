@@ -163,3 +163,8 @@ function updateWeatherUI(data) {
     document.getElementById("weatherIcon").alt =
         data.weather[0].description;
 }
+function toggleTheme(){
+
+    document.body.classList.toggle("dark");
+
+}

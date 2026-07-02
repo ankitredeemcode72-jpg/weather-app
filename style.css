@@ -70,3 +70,32 @@ img{
     }
 
 }
+.dark{
+
+    background:#121212 !important;
+
+    color:white;
+
+}
+
+.dark .card{
+
+    background:#1f1f1f;
+
+    color:white;
+
+}
+
+.dark button{
+
+    border:none;
+
+}
+
+.dark input{
+
+    background:#2d2d2d;
+
+    color:white;
+
+}
